@@ -31,49 +31,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // === RENDER CHECKOUT ITEMS ===
-  function renderCheckout() {
-    itemsContainer.innerHTML = "";
-    let subtotal = 0;
+ function renderCheckout() {
+  itemsContainer.innerHTML = "";
+  
+  let subtotal = 0;
 
-    cart.forEach(item => {
-      const itemTotal = item.price * item.quantity;
-      subtotal += itemTotal;
+  cart.forEach(item => {
+    const itemTotal = item.price * item.quantity;
+    subtotal += itemTotal;
 
-      const div = document.createElement("div");
-      div.className = "checkout-item";
-      div.innerHTML = `
-        <div class="item-image">
-          <img src="${item.img}" alt="${item.name}" width="80" height="80" style="border-radius:8px;object-fit:cover;">
+    const div = document.createElement("div");
+    div.className = "checkout-item";
+
+    div.innerHTML = `
+      <div class="item-image">
+        <img src="${item.img}" alt="${item.name}" 
+             width="80" height="80"
+             style="border-radius:8px;object-fit:cover;">
+      </div>
+
+      <div class="item-details">
+        <div class="item-name">${item.name}</div>
+
+        <div class="item-info">
+          <p>Delivery Option: ${orderDetails.deliveryOption || "-"}</p>
+          <p>Delivery Date: ${orderDetails.deliveryDate || "-"}</p>
+          <p>Delivery Time: ${orderDetails.deliveryTime || "-"}</p>
+
+          <p>Sender Name: ${orderDetails.senderName || "-"}</p>
+          <p>Sender Phone: ${orderDetails.senderPhone || "-"}</p>
+
+          <p>From: ${orderDetails.msgFrom || "-"}</p>
+          <p>To: ${orderDetails.msgTo || "-"}</p>
+          <p>Message: ${orderDetails.msgText || "-"}</p>
+
+          <p><b>Order Note:</b> ${localStorage.getItem("orderNote") || "-"}</p>
         </div>
+      </div>
 
-        <div class="item-details">
-          <div class="item-name">${item.name}</div>
-          <div class="item-info">
-            <p>Delivery Option: ${orderDetails.deliveryOption || "-"}</p>
-            <p>Delivery Date: ${orderDetails.deliveryDate || "-"}</p>
-            <p>Delivery Time: ${orderDetails.deliveryTime || "-"}</p>
-            <p>Sender Name: ${orderDetails.senderName || "-"}</p>
-            <p>Sender Phone: ${orderDetails.senderPhone || "-"}</p>
-            <p>From: ${orderDetails.msgFrom || "-"}</p>
-            <p>To: ${orderDetails.msgTo || "-"}</p>
-            <p>Message: ${orderDetails.msgText || "-"}</p>
+      <div class="item-price">${fmt(itemTotal)}</div>
+    `;
 
-            <p><b>Order Note:</b> ${localStorage.getItem("orderNote") || "-"}</p>
-          </div>
-        </div>
+    itemsContainer.appendChild(div);
+  });
 
-        <div class="item-price">${fmt(itemTotal)}</div>
-      `;
-      itemsContainer.appendChild(div);
-    });
+  // === UPDATE SUMMARY ===
+  subtotalEl.textContent = fmt(subtotal);
+  deliveryEl.textContent = fmt(deliveryFee);
+  serviceEl.textContent = fmt(serviceFee);
+  totalEl.textContent = fmt(subtotal + deliveryFee + serviceFee);
+}
 
-    subtotalEl.textContent = fmt(subtotal);
-    deliveryEl.textContent = fmt(deliveryFee);
-    serviceEl.textContent = fmt(serviceFee);
-    totalEl.textContent = fmt(subtotal + deliveryFee + serviceFee);
-  }
-
-  renderCheckout();
+renderCheckout();
 
   // === PILIH QRIS ===
   if (qrisRadio) {

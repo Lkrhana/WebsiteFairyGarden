@@ -225,6 +225,46 @@
     });
   </script>
   <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Ambil elemen grid
+        const grid = document.getElementById("popular-products-grid");
+        if (!grid) return;
+
+        // Master list produk sebagai fallback
+        const defaultProducts = [
+          { id: "rose-harmony", name: "Rose Harmony", category: "Birthday", stock: 15, price: 250000, img: "https://i.pinimg.com/1200x/68/a1/48/68a14894f37c6659176c61a20a57bb0d.jpg", sold: 90 },
+          { id: "lily-blossom", name: "Lily Blossom", category: "Mother's Day", stock: 20, price: 275000, img: "https://i.pinimg.com/736x/99/e2/ab/99e2ab5199035c32e4a4b1f564e76d0c.jpg", sold: 100 },
+          { id: "tulip-delight", name: "Tulip Delight", category: "Graduation", stock: 12, price: 300000, img: "https://i.pinimg.com/736x/bd/6a/ec/bd6aec14520f3b5763ac221063db719e.jpg", sold: 60},
+          { id: "peony-grace", name: "Peony Grace", category: "Anniversary", stock: 18, price: 285000, img: "https://i.pinimg.com/736x/84/86/2b/84862b87ef673479e8487f2dd549c75e.jpg", sold: 110 },
+          { id: "sunflower-joy", name: "Sunflower Joy", category: "Birthday", stock: 25, price: 260000, img: "https://i.pinimg.com/1200x/93/ab/8c/93ab8c4747d23016d3b6cbc1194c0a63.jpg", sold: 80 },
+          { id: "daisy-charm", name: "Daisy Charm", category: "Birthday", stock: 30, price: 230000, img: "https://i.pinimg.com/736x/1e/df/fb/1edffbba617cbfe9c3576aead8e823ee.jpg", sold: 95 },
+          { id: "orchid-dream", name: "Orchid Dream", category: "Just Because", stock: 10, price: 350000, img: "https://i.pinimg.com/1200x/14/2f/b2/142fb23313806b79364dd24c19447b8a.jpg", sold: 30},
+          { id: "carnation-bliss", name: "Carnation Bliss", category: "Mother's Day", stock: 22, price: 240000, img: "https://i.pinimg.com/1200x/9e/71/1e/9e711e33e43ad8a805459c941bd8ff01.jpg", sold: 75 }
+        ];
+
+        // Ambil data dari localStorage
+        // Ambil data dari localStorage
+        const productsFromStorage = JSON.parse(localStorage.getItem("products"));
+        const allProducts = (productsFromStorage && productsFromStorage.length > 0) 
+        ? productsFromStorage 
+        : defaultProducts;
+
+        // Ambil 8 produk pertama saja untuk halaman utama
+        const popularProducts = allProducts.slice(0, 8);
+
+        // Render produk ke HTML
+        grid.innerHTML = popularProducts.map(p => `
+          <div class="product-card">
+            <a href="product-detail.html?id=${p.id}">
+              <img src="${p.img}" alt="${p.name}">
+              <b>${p.name}</b>
+              <div>Rp. ${p.price.toLocaleString("id-ID")}</div>
+            </a>
+          </div>
+        `).join("");
+      });
+    </script>
+  <script>
 </script>
 </body>
 </html>
