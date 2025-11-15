@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1440">
+  <title>My Account - Fairy Garden</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Metal&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      background-color: var(--cream);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <section class="profile-container">
+    <h2 id="greeting">Hi, User!</h2>
+
+    <div class="profile-grid">
+      <!-- LEFT: RECENT ORDERS -->
+      <div>
+        <h3>Recent Orders</h3>
+        <div class="recent-orders" id="ordersList"></div>
+      </div>
+
+      <!-- RIGHT: ACCOUNT DETAILS + STATUS -->
+      <div class="account-info">
+        <div class="account-box">
+          <h4>Account Details</h4>
+          <div class="row">
+            <div style="flex:1">
+              <label>Nama Depan</label>
+              <input type="text" id="firstName" readonly>
+            </div>
+            <div style="flex:1">
+              <label>Nama Belakang</label>
+              <input type="text" id="lastName" readonly>
+            </div>
+          </div>
+          <div class="row">
+            <div style="flex:1">
+              <label>Email</label>
+              <input type="text" id="email" readonly>
+            </div>
+            <div style="flex:1">
+              <label>Nomor Telepon</label>
+              <input type="text" id="phone" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-box">
+          <h4>Status Pesanan</h4>
+          <div class="status-tracker">
+            <div class="status-step">
+              <div class="status-circle status-active">🌸</div>
+              <span>Diproses</span>
+            </div>
+            <div class="status-step">
+              <div class="status-circle"><i class="fa-solid fa-truck"></i></div>
+              <span>Dikirim</span>
+            </div>
+            <div class="status-step">
+              <div class="status-circle"><i class="fa-solid fa-bag-shopping"></i></div>
+              <span>Selesai</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </section>
+
+  <footer>
+    <p><b>YOU CAN FIND US ON</b></p>
+    <p><i class="fa-brands fa-instagram"></i> @fairygarden &nbsp;&nbsp;
+       <i class="fa-regular fa-envelope"></i> fairygarden@gmail.com</p>
+  </footer>
+
+  <!-- SCRIPT PROFILE -->
+  <script>
+    const user = JSON.parse(localStorage.getItem("userData"));
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (!isLoggedIn || !user) {
+      alert("Silakan login terlebih dahulu.");
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("greeting").textContent = `Hi, ${user.firstName} ${user.lastName}!`;
+      document.getElementById("firstName").value = user.firstName;
+      document.getElementById("lastName").value = user.lastName;
+      document.getElementById("email").value = user.email;
+      document.getElementById("phone").value = user.phone;
+    }
+
+    // Fungsi render ulang orders
+    function renderOrdersProfile() {
+      const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
+      const userOrders = allOrders.filter(o => o.userEmail === user.email);
+      const orderContainer = document.getElementById("ordersList");
+
+      orderContainer.innerHTML = "";
+
+      if (userOrders.length === 0) {
+        orderContainer.innerHTML = "<p>Belum ada pesanan 🌸</p>";
+      } else {
+        userOrders.forEach(order => {
+          const div = document.createElement("div");
+          div.classList.add("order-item");
+          div.innerHTML = `
+            <div class="order-left">
+              <img src="${order.img}" alt="${order.name}" class="order-thumb">
+              <div class="order-info">
+                <b>${order.name}</b>
+                <p>
+                  Delivery Option: ${order.deliveryOption}<br>
+                  Delivery Date: ${order.deliveryDate}<br>
+                  Delivery Time: ${order.deliveryTime}<br>
+                  Sender Name: ${order.senderName}<br>
+                  Sender Phone: ${order.senderPhone}<br>
+                  From: ${order.msgFrom}<br>
+                  To: ${order.msgTo}<br>
+                  Message: ${order.msgText}<br>
+                  <b>Order Note:</b> ${order.orderNote}<br>
+                  <b>Delivery Info:</b> ${order.address}, ${order.province}, ${order.postalCode} (${order.phone})<br>
+                  <b>Additional Info:</b> ${order.deliveryInfo}<br>
+                  <b>Status:</b> ${order.status || "Diproses"}
+                </p>
+              </div>
+            </div>
+            <div class="order-price">${order.totalPrice || order.price}</div>
+          `;
+          orderContainer.appendChild(div);
+        });
+      }
+    }
+
+    // Panggil render saat halaman pertama kali load
+    document.addEventListener("DOMContentLoaded", () => {
+      renderOrdersProfile();
+    });
+
+    // Event listener storage untuk auto update ketika ada perubahan orders di tab lain
+    window.addEventListener("storage", function(event) {
+      if (event.key === "orders") {
+        renderOrdersProfile();
+      }
+    });
+
+    // Logout button
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "index.html";
+    });
+  </script>
+
+  <!-- SCRIPT HEADER -->
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header-container").innerHTML = data;
+
+        // Tambahkan underline menu aktif
+        const current = window.location.pathname.split("/").pop();
+        document.querySelectorAll("nav ul li a").forEach(link => {
+          if (link.getAttribute("href") === current) {
+            link.style.textDecoration = "underline";
+            link.style.textDecorationColor = "#f4a6b5";
+          }
+        });
+
+        // Dropdown interaktif
+        document.querySelectorAll(".dropdown").forEach(dd => {
+          dd.addEventListener("mouseenter", () => {
+            dd.querySelector(".dropdown-menu").style.display = "block";
+          });
+          dd.addEventListener("mouseleave", () => {
+            dd.querySelector(".dropdown-menu").style.display = "none";
+          });
+        });
+      })
+      .catch(err => console.error("Header gagal dimuat:", err));
+  </script>
+
+</body>
+</html>
