@@ -472,41 +472,47 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
       <!-- MODAL TAMBAH/EDIT PRODUK -->
-      <div id="productModal" class="product-modal" style="display:none;">
-        <div class="modal-content-product">
-          <span class="close-modal" id="closeProductModal">&times;</span>
-          <h3 id="modalTitle">Tambah Produk</h3>
-          <form id="productForm">
-            <label>Nama Produk</label>
-            <input type="text" id="productName" required>
+      <!-- MODAL TAMBAH/EDIT PRODUK -->
+<div id="productModal" class="product-modal" style="display:none;">
+  <div class="modal-content-product">
+    <span class="close-modal" id="closeProductModal">&times;</span>
+    <h3 id="modalTitle">Tambah Produk</h3>
+    <form id="productForm">
 
-            <label>Kategori</label>
-            <select id="productCategory" required>
-              <option value="">Pilih Kategori</option>
-              <option value="birthday">Birthday</option>
-              <option value="mothersday">Mother's Day</option>
-              <option value="justbecause">Just Because</option>
-              <option value="anniversary">Anniversary</option>
-              <option value="graduation">Graduation</option>
-            </select>
+      <label>Nama Produk</label>
+      <input type="text" id="productName" required>
 
-            <label>Stok</label>
-            <input type="number" id="productStock" min="0" required>
+      <label>Kategori</label>
+      <select id="productCategory" required>
+        <option value="">Pilih Kategori</option>
+        <option value="birthday">Birthday</option>
+        <option value="mothersday">Mother's Day</option>
+        <option value="justbecause">Just Because</option>
+        <option value="anniversary">Anniversary</option>
+        <option value="graduation">Graduation</option>
+      </select>
 
-            <label>Harga</label>
-            <input type="number" id="productPrice" min="0" required>
+      <label>Stok</label>
+      <input type="number" id="productStock" min="0" required>
 
-            <label>URL Gambar</label>
-            <input type="text" id="productImg" placeholder="https://..." required>
+      <label>Harga</label>
+      <input type="number" id="productPrice" min="0" required>
 
-            <input type="hidden" id="productId">
+      <label>Deskripsi Produk</label>
+      <textarea id="productDesc" rows="3" placeholder="Masukkan deskripsi produk..." required></textarea>
 
-            <button type="submit" class="button-small" style="background:#73855c;color:white;width:100%;margin-top:15px;">
-              Simpan
-            </button>
-          </form>
-        </div>
-      </div>
+      <label>URL Gambar</label>
+      <input type="text" id="productImg" placeholder="https://..." required>
+
+      <input type="hidden" id="productId">
+
+      <button type="submit" class="button-small" style="background:#73855c;color:white;width:100%;margin-top:15px;">
+        Simpan
+      </button>
+
+    </form>
+  </div>
+</div>
     `;
 
     // === EVENT LISTENERS ===
@@ -538,6 +544,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById("productPrice").value = product.price;
           document.getElementById("productImg").value = product.img;
           document.getElementById("productId").value = product.id;
+          document.getElementedById("productDesc").value = product.desc || "";
           document.getElementById("productModal").style.display = "flex";
         }
       });
@@ -597,6 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const stock = parseInt(document.getElementById("productStock").value);
       const price = parseInt(document.getElementById("productPrice").value);
       const img = document.getElementById("productImg").value.trim();
+      const desc = document.getElementById("productDesc").value.trim();
 
       let products = JSON.parse(localStorage.getItem("products")) || [];
 
@@ -607,12 +615,12 @@ document.addEventListener("DOMContentLoaded", () => {
           const oldSoldCount = products[index].sold || 0; 
           
           // Ganti data produk, tapi pertahankan 'sold'
-          products[index] = { id, name, category, stock, price, img, sold: oldSoldCount };
+          products[index] = { id, name, category, stock, price, img, desc, sold: oldSoldCount };
         }
       } else {
         // Add new
         const newId = name.toLowerCase().replace(/\s+/g, '-');
-        products.push({ id: newId, name, category, stock, price, img, sold: 0 });
+        products.push({ id: newId, name, category, stock, price, img, desc, sold: 0 });
       }
 
       localStorage.setItem("products", JSON.stringify(products));

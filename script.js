@@ -64,7 +64,6 @@ if (loginModal) {
   }
 }
 
-// ========== SIGN UP HANDLER ==========
 /* === SIGN UP === */
 if (signupModal) {
   const signupForm = document.getElementById("signupForm");

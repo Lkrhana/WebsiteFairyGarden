@@ -292,3 +292,18 @@ table td {
   outline: none;
   border-color: #73855c;
 }
+
+.modal-content-product textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  resize: vertical;
+  font-family: 'Inter', sans-serif;
+}
+
+.modal-content-product textarea:focus {
+  outline: none;
+  border-color: #73855c;
+}
